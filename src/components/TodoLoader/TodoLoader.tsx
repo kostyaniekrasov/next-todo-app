@@ -2,7 +2,7 @@ type Props = {
   isActive?: boolean;
 };
 
-function TodoLoader({ isActive }: Readonly<Props>) {
+const TodoLoader = ({ isActive }: Readonly<Props>) => {
   return (
     isActive && (
       <div className="absolute inset-0 flex items-center justify-center rounded-md bg-gray-200 bg-opacity-50">
@@ -10,6 +10,6 @@ function TodoLoader({ isActive }: Readonly<Props>) {
       </div>
     )
   );
-}
+};
 
 export default TodoLoader;

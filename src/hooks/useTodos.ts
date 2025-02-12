@@ -10,7 +10,7 @@ const fetchTodos = async (): Promise<Todo[]> => {
   return data;
 };
 
-function useTodos(filterStatus: FilterStatus) {
+const useTodos = (filterStatus: FilterStatus) => {
   const queryClient = useQueryClient();
 
   const { data: todos = [], isLoading: isFetchingTodos } = useQuery({
@@ -52,7 +52,16 @@ function useTodos(filterStatus: FilterStatus) {
 
   const addTodo = useMutation({
     mutationFn: async (title: string) => {
-      return { id: uniqueId(), userId: 1, title, completed: false };
+      const response = await axios.post(`${API_URL}`, {
+        title,
+        completed: false,
+        userId: 1,
+      });
+
+      return {
+        status: response.status,
+        todo: { id: uniqueId(), userId: 1, title, completed: false },
+      };
     },
 
     onMutate: async (newTitle: string) => {
@@ -72,6 +81,8 @@ function useTodos(filterStatus: FilterStatus) {
       return { previousTodos };
     },
 
+    onSuccess: (_data) => {},
+
     onError: (_error, _newTodo, context) => {
       if (context?.previousTodos) {
         queryClient.setQueryData(['todos'], context.previousTodos);
@@ -81,7 +92,7 @@ function useTodos(filterStatus: FilterStatus) {
 
   const updateTodo = useMutation({
     mutationFn: async (updatedTodo: Partial<Todo>) => {
-      if (updatedTodo.id && updatedTodo.id <= 200) {
+      if (updatedTodo.id && updatedTodo.id > 200) {
         return updatedTodo;
       }
 
@@ -103,15 +114,9 @@ function useTodos(filterStatus: FilterStatus) {
     },
   });
 
-  const renameTodo = useMutation({
-    mutationFn: async ({ id, newTitle }: { id: number; newTitle: string }) => {
-      return updateTodo.mutateAsync({ id, title: newTitle });
-    },
-  });
-
   const deleteTodo = useMutation({
     mutationFn: async (id: number) => {
-      if (id > 200) {
+      if (id < 200) {
         await axios.delete(`${API_URL}/${id}`);
       }
       return id;
@@ -119,56 +124,19 @@ function useTodos(filterStatus: FilterStatus) {
     onSuccess: (deletedId) => removeTodosFromQuery([deletedId]),
   });
 
-  const clearCompleted = useMutation({
-    mutationFn: async () => {
-      const completedTodos = getAllTodos().filter((todo) => todo.completed);
-      const deletableTodos = completedTodos.filter((todo) => todo.id > 200);
-
-      await Promise.all(
-        deletableTodos.map((todo) => axios.delete(`${API_URL}/${todo.id}`))
-      );
-
-      return completedTodos.map((todo) => todo.id);
-    },
-    onSuccess: removeTodosFromQuery,
-  });
-
-  const toggleAllTodos = useMutation({
-    mutationFn: async () => {
-      const allTodos = getAllTodos();
-      const newCompletedState = !allTodos.every((todo) => todo.completed);
-
-      const updatedTodos = allTodos.map((todo) => ({
-        ...todo,
-        completed: newCompletedState,
-      }));
-
-      queryClient.setQueryData(['todos'], updatedTodos);
-
-      return updatedTodos;
-    },
-  });
-
   const isLoading =
     isFetchingTodos ||
     addTodo.isPending ||
-    renameTodo.isPending ||
     toggleTodo.isPending ||
-    deleteTodo.isPending ||
-    clearCompleted.isPending ||
-    toggleAllTodos.isPending;
+    deleteTodo.isPending;
 
   return {
-    todos,
+    todos: filteredTodos,
     isLoading,
     addTodo,
-    renameTodo,
     toggleTodo,
     deleteTodo,
-    clearCompleted,
-    toggleAllTodos,
-    filteredTodos,
   };
-}
+};
 
 export default useTodos;

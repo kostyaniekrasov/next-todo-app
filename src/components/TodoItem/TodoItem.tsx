@@ -1,7 +1,4 @@
-'use client';
-
 import { Todo } from '@/types';
-import { useEffect, useRef, useState } from 'react';
 import { TodoLoader } from '@/components';
 import classNames from 'classnames';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/16/solid';
@@ -9,75 +6,19 @@ import { CheckIcon, XMarkIcon } from '@heroicons/react/16/solid';
 type Props = {
   todo: Todo;
   removeTodo: (id: number) => Promise<void>;
-  isLoading: boolean;
-  renameTodo: (id: number, title: string) => Promise<void>;
+  isLoading?: boolean;
   toggleTodo: (id: number) => void;
 };
 
-function TodoItem({
+const TodoItem = ({
   todo,
   removeTodo,
   isLoading,
-  renameTodo,
   toggleTodo,
-}: Readonly<Props>) {
-  const [editing, setEditing] = useState(false);
-  const [editingText, setEditingText] = useState(todo.title);
-
-  const titleField = useRef<HTMLInputElement>(null);
-
-  const handleRename = async () => {
-    try {
-      if (!editingText.trim()) {
-        await removeTodo(todo.id);
-        setEditing(true);
-      }
-
-      await renameTodo(todo.id, editingText);
-      setEditingText(editingText.trim());
-      setEditing(false);
-    } catch (error) {
-      setEditing(true);
-      if (titleField.current) {
-        titleField.current.focus();
-      }
-
-      throw error;
-    }
-  };
-
-  const handleDoubleClick = () => {
-    setEditing(true);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleRename();
-    } else if (e.key === 'Escape') {
-      setEditing(false);
-      setEditingText(todo.title);
-    }
-  };
-
-  const handleBlur = () => {
-    handleRename();
-
-    if (!editingText.trim().length) {
-      if (titleField.current) {
-        titleField.current.focus();
-      }
-    }
-  };
-
+}: Readonly<Props>) => {
   const handleRemoving = () => {
     removeTodo(todo.id);
   };
-
-  useEffect(() => {
-    if (editing && titleField.current) {
-      titleField.current.focus();
-    }
-  }, [editing]);
 
   return (
     <div
@@ -104,38 +45,21 @@ function TodoItem({
         </label>
       </div>
 
-      {editing ? (
-        <input
-          ref={titleField}
-          type="text"
-          value={editingText}
-          onChange={(e) => setEditingText(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onBlur={handleBlur}
-          className="py-3; w-full break-all px-[15px] shadow-[inset_0_-1px_5px_0_rgba(0,0,0,0.2)] outline-none focus:ring-0"
-        />
-      ) : (
-        <>
-          <p
-            className="py-3; break-all px-[15px] transition-[color] duration-[0.4s]"
-            onDoubleClick={handleDoubleClick}
-          >
-            {editingText}
-          </p>
+      <p className="py-3; break-all px-[15px] transition-[color] duration-[0.4s]">
+        {todo.title}
+      </p>
 
-          <button
-            type="button"
-            onClick={handleRemoving}
-            className="absolute inset-y-0 right-3 float-right -translate-y-0.5 cursor-pointer border-0 font-[inherit] text-[120%] leading-none text-[#cc9a9a] opacity-0 transition-opacity duration-300 ease-out hover:text-[#af5b5e] group-hover:opacity-100"
-          >
-            <XMarkIcon className="h-6 w-6" />
-          </button>
-        </>
-      )}
+      <button
+        type="button"
+        onClick={handleRemoving}
+        className="absolute inset-y-0 right-3 float-right -translate-y-0.5 cursor-pointer border-0 font-[inherit] text-[120%] leading-none text-[#cc9a9a] opacity-0 transition-opacity duration-300 ease-out hover:text-[#af5b5e] group-hover:opacity-100"
+      >
+        <XMarkIcon className="h-6 w-6" />
+      </button>
 
       <TodoLoader isActive={isLoading} />
     </div>
   );
-}
+};
 
 export default TodoItem;

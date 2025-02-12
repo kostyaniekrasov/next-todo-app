@@ -6,7 +6,7 @@ import {
   QueryClient,
 } from '@tanstack/react-query';
 
-export default async function TodosPage() {
+const TodosPage = async () => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
@@ -19,4 +19,6 @@ export default async function TodosPage() {
       <TodoApp />
     </HydrationBoundary>
   );
-}
+};
+
+export default TodosPage;

@@ -1,5 +1,5 @@
 'use client';
-import { Todo, TodosAnimation } from '@/types';
+import { AnimationType, Todo, TodosAnimation } from '@/types';
 import { useState } from 'react';
 import { TodoItem } from '@/components';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -9,26 +9,19 @@ type Props = {
   removeTodo: (id: number) => Promise<void>;
   tempTodo: Todo | null;
   isLoading?: boolean;
-  renameTodo: (id: number, newTitle: string) => Promise<void>;
   toggleTodo: (id: number) => Promise<void>;
-  isToggleAllLoading: boolean;
-  isClearCompletedLoading: boolean;
   animationState: TodosAnimation;
 };
 
-function TodoList({
+const TodoList = ({
   todos,
   removeTodo,
   tempTodo,
   isLoading,
-  renameTodo,
   toggleTodo,
-  isToggleAllLoading,
-  isClearCompletedLoading,
   animationState,
-}: Readonly<Props>) {
+}: Readonly<Props>) => {
   const [deletingTodoId, setDeletingTodoId] = useState<number | null>(null);
-  const [updatingTodoId, setUpdatingTodoId] = useState<number | null>(null);
   const [togglingTodoId, setTogglingTodoId] = useState<number | null>(null);
 
   const handleRemoveTodo = async (id: number) => {
@@ -37,50 +30,48 @@ function TodoList({
     setDeletingTodoId(null);
   };
 
-  const handleUpdateTodo = async (id: number, newTitle: string) => {
-    setUpdatingTodoId(id);
-    await renameTodo(id, newTitle);
-    setUpdatingTodoId(null);
-  };
-
   const handleToggleTodo = async (id: number) => {
     setTogglingTodoId(id);
     await toggleTodo(id);
     setTogglingTodoId(null);
   };
 
-  const isAllCompleted = todos.every((todo) => todo.completed);
-
-  function getAnimationState(
+  const getAnimationState = (
     animationState: TodosAnimation,
-    type: 'initial' | 'exit'
-  ) {
-    if (animationState === TodosAnimation.adding && type === 'initial') {
+    type: AnimationType
+  ) => {
+    if (
+      animationState === TodosAnimation.adding &&
+      type === AnimationType.initial
+    ) {
       return { opacity: 0, scale: 0.8 };
     }
 
-    if (animationState === TodosAnimation.deleting && type === 'exit') {
+    if (
+      animationState === TodosAnimation.deleting &&
+      type === AnimationType.exit
+    ) {
       return { opacity: 0, x: -100 };
     }
 
     if (animationState === TodosAnimation.filtering) {
-      return type === 'exit'
+      return type === AnimationType.exit
         ? { opacity: 0, scale: 0 }
         : { opacity: 0, scale: 0.8 };
     }
 
     return { opacity: 0, y: 20 };
-  }
+  };
 
   return (
-    <section className="border-t border-solid border-t-[#e6e6e6]">
+    <section className="border-t border-solid border-gray-100">
       <AnimatePresence>
         {todos.map((todo) => (
           <motion.div
             key={todo.id}
-            initial={getAnimationState(animationState, 'initial')}
+            initial={getAnimationState(animationState, AnimationType.initial)}
             animate={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-            exit={getAnimationState(animationState, 'exit')}
+            exit={getAnimationState(animationState, AnimationType.exit)}
             transition={{ duration: 0.3 }}
           >
             <TodoItem
@@ -88,15 +79,7 @@ function TodoList({
               removeTodo={async (id) => await handleRemoveTodo(id)}
               isLoading={
                 (isLoading && deletingTodoId === todo.id) ||
-                (isLoading && updatingTodoId === todo.id) ||
-                (isLoading && togglingTodoId === todo.id) ||
-                (isToggleAllLoading &&
-                  ((isAllCompleted && todo.completed) ||
-                    (!isAllCompleted && !todo.completed))) ||
-                (isClearCompletedLoading && todo.completed)
-              }
-              renameTodo={async (id, newTitle) =>
-                await handleUpdateTodo(id, newTitle)
+                (isLoading && togglingTodoId === todo.id)
               }
               toggleTodo={async (id) => await handleToggleTodo(id)}
             />
@@ -110,15 +93,12 @@ function TodoList({
             todo={tempTodo}
             removeTodo={async (id) => await handleRemoveTodo(id)}
             isLoading={tempTodo !== null}
-            renameTodo={async (id, newTitle) =>
-              await handleUpdateTodo(id, newTitle)
-            }
             toggleTodo={() => {}}
           />
         </div>
       )}
     </section>
   );
-}
+};
 
 export default TodoList;

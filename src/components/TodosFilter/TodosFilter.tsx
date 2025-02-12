@@ -12,7 +12,7 @@ const FILTERS = [
   { label: 'Completed', status: FilterStatus.completed, href: '#/completed' },
 ];
 
-function TodosFilter({ filterStatus, onFilterChange }: Readonly<Props>) {
+const TodosFilter = ({ filterStatus, onFilterChange }: Readonly<Props>) => {
   return (
     <nav className="flex">
       {FILTERS.map(({ label, status, href }) => (
@@ -33,6 +33,6 @@ function TodosFilter({ filterStatus, onFilterChange }: Readonly<Props>) {
       ))}
     </nav>
   );
-}
+};
 
 export default TodosFilter;

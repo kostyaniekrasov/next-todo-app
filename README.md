@@ -1,7 +1,4 @@
 <h1 align="center">Welcome to Next Todo App 👋</h1>
-<p>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
-</p>
 
 > A simple and intuitive To-Do List application that allows users to add, edit, delete, and filter tasks efficiently. The app is built with React Query for state management and API interactions, ensuring smooth performance and real-time updates.
 

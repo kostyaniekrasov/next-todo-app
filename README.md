@@ -33,7 +33,7 @@ npm run start
 ## Dependencies
 
 - [Tailwind CSS](https://tailwindcss.com/docs/installation)
-- [React Query](React Query)
+- [React Query](https://www.npmjs.com/package/react-query)
 - [framer-motion@11.11.17](https://www.npmjs.com/package/framer-motion?activeTab=versions)
 - [next@14.2.13](https://www.npmjs.com/package/next)
 - [react](https://www.npmjs.com/package/react)

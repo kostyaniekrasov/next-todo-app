@@ -11,6 +11,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Todo App',
   description: 'Todo App with Next.js',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

@@ -19,7 +19,7 @@ npm run start
 ### ✅ Task Management
 - **Add a Task** – Enter text in the input field and press **Enter**.
 - **Toggle Task Completion** – Click the **checkbox** to mark a task as completed.
-- **Delete a Task** – Click the **X button** or clear the text while editing.
+- **Delete a Task** – Click the **X button**.
 
 ### 🔍 Task Filtering
 - **All** – Show all tasks.

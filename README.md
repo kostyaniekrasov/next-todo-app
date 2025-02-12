@@ -5,7 +5,6 @@
 
 > A simple and intuitive To-Do List application that allows users to add, edit, delete, and filter tasks efficiently. The app is built with React Query for state management and API interactions, ensuring smooth performance and real-time updates.
 
-### 🏠 [Homepage](https://next-todo-app-xi-orcin.vercel.app/)
 
 ### ✨ [Demo](https://next-todo-app-xi-orcin.vercel.app/)
 
@@ -51,10 +50,3 @@ npm run start
 
 * Github: [@kostyaniekrasov](https://github.com/kostyaniekrasov)
 * LinkedIn: [@www.linkedin.com\/in\/kostiantyn-niekrasov](https://linkedin.com/in/www.linkedin.com\/in\/kostiantyn-niekrasov)
-
-## Show your support
-
-Give a ⭐️ if this project helped you!
-
-***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_

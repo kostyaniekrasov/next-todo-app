@@ -1,24 +1,11 @@
 import { TodoApp } from '@/components';
 import { getTodos } from '@/lib';
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from '@tanstack/react-query';
+import {} from '@tanstack/react-query';
 
 const TodosPage = async () => {
-  const queryClient = new QueryClient();
+  const todos = await getTodos();
 
-  await queryClient.prefetchQuery({
-    queryKey: ['todos'],
-    queryFn: getTodos,
-  });
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <TodoApp />
-    </HydrationBoundary>
-  );
+  return <TodoApp initialTodos={todos} />;
 };
 
 export default TodosPage;

@@ -1,11 +1,15 @@
 'use client';
 
-import { FilterStatus, TodosAnimation } from '@/types';
+import { FilterStatus, Todo, TodosAnimation } from '@/types';
 import { useEffect, useRef, useState } from 'react';
 import { TodosFilter, TodoList } from '@/components';
 import useTodos from '@/hooks/useTodos';
 
-const TodoApp = () => {
+type Props = {
+  initialTodos: Todo[];
+};
+
+const TodoApp = ({ initialTodos }: Readonly<Props>) => {
   const [title, setTitle] = useState('');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>(
     FilterStatus.all
@@ -14,8 +18,10 @@ const TodoApp = () => {
     TodosAnimation.adding
   );
 
-  const { todos, isLoading, addTodo, toggleTodo, deleteTodo } =
-    useTodos(filterStatus);
+  const { todos, isLoading, addTodo, toggleTodo, deleteTodo } = useTodos(
+    filterStatus,
+    initialTodos
+  );
 
   const activeTodos = todos.filter((todo) => !todo.completed);
 

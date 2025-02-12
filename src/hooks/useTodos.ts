@@ -10,13 +10,14 @@ const fetchTodos = async (): Promise<Todo[]> => {
   return data;
 };
 
-const useTodos = (filterStatus: FilterStatus) => {
+const useTodos = (filterStatus: FilterStatus, initialTodos: Todo[]) => {
   const queryClient = useQueryClient();
 
   const { data: todos = [], isLoading: isFetchingTodos } = useQuery({
     queryKey: ['todos'],
     queryFn: fetchTodos,
     staleTime: 1000 * 60 * 5,
+    initialData: initialTodos,
   });
 
   const getAllTodos = (): Todo[] => {
